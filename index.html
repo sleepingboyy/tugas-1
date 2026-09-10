@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Pengumpulan Tugas</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4 sm:p-6">
+
+    <!-- Container Utama -->
+    <div class="w-full max-w-2xl bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl p-6 sm:p-8">
+        
+        <!-- Header -->
+        <div class="mb-8 text-center">
+            <div class="inline-flex items-center justify-center w-14 h-14 bg-indigo-600/20 text-indigo-400 rounded-xl mb-3 border border-indigo-500/30">
+                <i data-lucide="upload-cloud" class="w-8 h-8"></i>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Pengumpulan Tugas Online</h1>
+            <p class="text-slate-400 text-sm mt-1">Pastikan file dan data tugas yang dikirimkan sudah benar.</p>
+        </div>
+
+        <!-- Form Pengumpulan -->
+        <form id="assignmentForm" class="space-y-5">
+            
+            <!-- Kartu Informasi Pengirim (Default) -->
+            <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-sm">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-indigo-500/20 text-indigo-400 rounded-lg flex items-center justify-center font-bold text-lg shrink-0 border border-indigo-500/30">
+                        <i data-lucide="user" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 block font-medium">Pengirim (Mahasiswa)</span>
+                        <span class="font-semibold text-slate-100">Sekarmaji Hukman Adala Hamdani</span>
+                    </div>
+                </div>
+                <div class="sm:text-right pl-13 sm:pl-0">
+                    <span class="text-xs text-slate-400 block font-medium">NIM</span>
+                    <span class="font-mono font-semibold text-indigo-400 tracking-wider">1247050124</span>
+                </div>
+            </div>
+
+            <!-- Pilih Mata Kuliah / Tugas -->
+            <div>
+                <label for="matkul" class="block text-sm font-medium text-slate-300 mb-1.5">Mata Kuliah & Pertemuan <span class="text-rose-500">*</span></label>
+                <select id="matkul" required 
+                    class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition">
+                    <option value="" disabled selected>-- Pilih Tugas --</option>
+                    <option value="Pemrograman Web - Tugas 1">Pemrograman Web - Tugas 1 (HTML & CSS)</option>
+                    <option value="Basis Data - Tugas 2">Basis Data - Tugas 2 (SQL Query)</option>
+                    <option value="Sistem Operasi - Tugas 3">Sistem Operasi - Tugas 3 (Shell Script)</option>
+                    <option value="Algoritma - Tugas Akhir">Algoritma & Pemrograman - Tugas Akhir</option>
+                </select>
+            </div>
+
+            <!-- Area Upload File (Drag & Drop) -->
+            <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1.5">Unggah File Tugas <span class="text-rose-500">*</span></label>
+                
+                <div id="dropZone" 
+                    class="relative border-2 border-dashed border-slate-700 hover:border-indigo-500 bg-slate-900/40 hover:bg-slate-900/80 rounded-xl p-6 text-center cursor-pointer transition duration-200">
+                    <input type="file" id="fileInput" class="hidden" accept=".pdf,.zip,.rar,.docx">
+                    
+                    <div id="uploadPrompt" class="space-y-2">
+                        <i data-lucide="file-up" class="w-10 h-10 text-slate-500 mx-auto"></i>
+                        <p class="text-sm text-slate-300 font-medium">
+                            <span class="text-indigo-400 font-semibold underline">Klik untuk memilih</span> atau tarik file ke sini
+                        </p>
+                        <p class="text-xs text-slate-500">Format: PDF, ZIP, RAR, atau DOCX (Maks. 10MB)</p>
+                    </div>
+
+                    <!-- Preview File -->
+                    <div id="filePreview" class="hidden flex items-center justify-between bg-slate-800 p-3 rounded-lg border border-slate-700 text-left">
+                        <div class="flex items-center space-x-3 overflow-hidden">
+                            <div class="p-2 bg-indigo-500/20 text-indigo-400 rounded-lg shrink-0">
+                                <i data-lucide="file-text" class="w-6 h-6"></i>
+                            </div>
+                            <div class="truncate">
+                                <p id="fileName" class="text-sm font-medium text-slate-200 truncate">file-name.pdf</p>
+                                <p id="fileSize" class="text-xs text-slate-400">0 KB</p>
+                            </div>
+                        </div>
+                        <button type="button" id="removeFileBtn" class="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Catatan Tambahan (Opsional) -->
+            <div>
+                <label for="catatan" class="block text-sm font-medium text-slate-300 mb-1.5">Catatan Tambahan <span class="text-xs text-slate-500">(Opsional)</span></label>
+                <textarea id="catatan" rows="3" placeholder="Tambahkan catatan jika ada kendala atau pesan untuk dosen/asisten..." 
+                    class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition resize-none"></textarea>
+            </div>
+
+            <!-- Tombol Submit -->
+            <button type="submit" id="submitBtn" 
+                class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-indigo-600/30 flex items-center justify-center space-x-2 transition duration-200 active:scale-[0.99]">
+                <i data-lucide="send" class="w-5 h-5"></i>
+                <span>Kirim Tugas Now</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- Modal Sukses Pengiriman -->
+    <div id="successModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-md rounded-2xl p-6 text-center shadow-2xl transform transition-all scale-95 opacity-0" id="modalCard">
+            <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="check-circle-2" class="w-10 h-10"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-1">Berhasil Dikirim!</h3>
+            <p class="text-sm text-slate-400 mb-6">Tugas Anda telah tersimpan dan terverifikasi di sistem.</p>
+            
+            <div class="bg-slate-900/80 p-4 rounded-xl text-left text-xs space-y-2 mb-6 border border-slate-700/50">
+                <div class="flex justify-between"><span class="text-slate-400">Nama:</span> <span id="modalNama" class="font-medium text-slate-200"></span></div>
+                <div class="flex justify-between"><span class="text-slate-400">NIM:</span> <span id="modalNim" class="font-medium text-slate-200"></span></div>
+                <div class="flex justify-between"><span class="text-slate-400">Tugas:</span> <span id="modalMatkul" class="font-medium text-slate-200 truncate max-w-[180px]"></span></div>
+                <div class="flex justify-between"><span class="text-slate-400">File:</span> <span id="modalFileName" class="font-medium text-indigo-400 truncate max-w-[180px]"></span></div>
+            </div>
+
+            <button type="button" id="closeModalBtn" 
+                class="w-full bg-slate-700 hover:bg-slate-600 text-white font-medium py-2.5 rounded-xl transition">
+                Tutup & Kirim Tugas Lain
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript logic -->
+    <script>
+        // Inisialisasi Lucide Icons
+        lucide.createIcons();
+
+        // Default Identity
+        const DEFAULT_NAMA = "Sekarmaji Hukman Adala Hamdani";
+        const DEFAULT_NIM = "1247050124";
+
+        // Element Selectors
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const uploadPrompt = document.getElementById('uploadPrompt');
+        const filePreview = document.getElementById('filePreview');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const removeFileBtn = document.getElementById('removeFileBtn');
+        const form = document.getElementById('assignmentForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Modal Elements
+        const successModal = document.getElementById('successModal');
+        const modalCard = document.getElementById('modalCard');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        let selectedFile = null;
+
+        // Klik pada Dropzone untuk trigger input file
+        dropZone.addEventListener('click', (e) => {
+            if (e.target !== removeFileBtn && !removeFileBtn.contains(e.target)) {
+                fileInput.click();
+            }
+        });
+
+        // Event Drag and Drop
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropZone.classList.add('border-indigo-500', 'bg-slate-800/80');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('border-indigo-500', 'bg-slate-800/80');
+            });
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        // Fungsi Memproses File yang Dipilih
+        function handleFileSelect(file) {
+            const maxSizeInBytes = 10 * 1024 * 1024;
+            if (file.size > maxSizeInBytes) {
+                alert('Ukuran file terlalu besar! Maksimal 10 MB.');
+                return;
+            }
+
+            selectedFile = file;
+            fileName.textContent = file.name;
+            fileSize.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+
+            uploadPrompt.classList.add('hidden');
+            filePreview.classList.remove('hidden');
+            filePreview.classList.add('flex');
+        }
+
+        // Hapus File Terpilih
+        removeFileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selectedFile = null;
+            fileInput.value = '';
+            filePreview.classList.add('hidden');
+            filePreview.classList.remove('flex');
+            uploadPrompt.classList.remove('hidden');
+        });
+
+        // Submit Form Handler
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            if (!selectedFile) {
+                alert('Harap unggah file tugas Anda terlebih dahulu!');
+                return;
+            }
+
+            // Tampilkan Loading State pada Tombol
+            const originalBtnContent = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Mengirim...</span>
+            `;
+
+            // Simulasi Request API / Server (1.8 Detik Delay)
+            setTimeout(() => {
+                // Isi data default ke modal
+                document.getElementById('modalNama').textContent = DEFAULT_NAMA;
+                document.getElementById('modalNim').textContent = DEFAULT_NIM;
+                document.getElementById('modalMatkul').textContent = document.getElementById('matkul').value;
+                document.getElementById('modalFileName').textContent = selectedFile.name;
+
+                // Reset Tombol
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnContent;
+
+                // Tampilkan Modal
+                successModal.classList.remove('hidden');
+                setTimeout(() => {
+                    modalCard.classList.remove('scale-95', 'opacity-0');
+                    modalCard.classList.add('scale-100', 'opacity-100');
+                }, 10);
+
+            }, 1800);
+        });
+
+        // Tutup Modal & Reset Form
+        closeModalBtn.addEventListener('click', () => {
+            modalCard.classList.remove('scale-100', 'opacity-100');
+            modalCard.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                successModal.classList.add('hidden');
+                form.reset();
+                removeFileBtn.click();
+            }, 200);
+        });
+    </script>
+</body>
+</html>
